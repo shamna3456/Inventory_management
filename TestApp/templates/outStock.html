@@ -1,0 +1,33 @@
+{% extends "index.html" %}
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center mt-5 w-100">
+    <table class="table table-bordered border-1 border-info w-75 bg-dark text-light ">
+    <thead>
+        <tr class="text-info p-4">
+            <th>ITEM NAME</th>
+            <th>DESCRIPTION</th>
+            <th>QUANTITY</th>
+            <th>REMOVED DATE</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in stock %}
+        <tr>
+            <td>{{i.item.item_name}}</td>
+            <td>{{i.item.description}}</td>
+            <td>{{i.quantity}}</td>
+            <td>{{i.date_removed}}</td>
+           <td>
+            <a href="{% url 'addStock_item' i.item.id %}"  class="btn btn-danger">Add Stock</a>
+           </td>
+            
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
