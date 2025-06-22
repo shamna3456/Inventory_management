@@ -11,6 +11,9 @@ class Home(ListView):
     template_name='index.html'
     model=ItemMaster
     context_object_name="items"
+    def get_queryset(self):
+        return ItemMaster.objects.all().order_by('-id')
+    
 
 
 class ItemAdd(FormView):
@@ -66,6 +69,7 @@ class AddStock(View):
     
     def post(self,request,*args, **kwargs):
         item=ItemMaster.objects.get(id=kwargs.get("id"))
+        print(item)
         quantity=request.POST.get("quantity")
         expiry=request.POST.get("expiry_date")
         num=request.POST.get("entry_number")
@@ -84,6 +88,10 @@ class AddStock(View):
         else:
             GoodsIn.objects.create(item=item,quantity=quantity,expiry_date=expiry,entry_number=num)
             messages.success(request," Item Stock Added!!!")
+            s=GoodsOut.objects.filter(item=item).delete()
+            messages.success(request,"item restoked")
+
+
             return redirect("viewStock_item")
 
 class StockView(View):
@@ -106,17 +114,23 @@ class StockUpdate(View):
         item.quantity=quantity
         if expiry_date:
             item.expiry_date=expiry_date
-        item.entry_number=entry_number
+        if entry_number:
+             item.entry_number=entry_number
         
-        item.save()
+        
         if int(quantity) <=0:
             GoodsOut.objects.create(item=item.item,quantity=0)
-        messages.success(request,"Stock Updated !!!")
+            item.delete()
+        else:
+            item.save()
+            messages.success(request,"Stock Updated !!!")
+            GoodsOut.objects.filter(item=item.item).delete()
         return redirect("viewStock_item")
     
 class OutStock(View):
     def get(self,request):
-        item=GoodsOut.objects.filter(quantity__gt=0)
+        item=GoodsOut.objects.filter(quantity__lt=1)
+      
         
         return render(request,'outStock.html',{"stock":item})
 

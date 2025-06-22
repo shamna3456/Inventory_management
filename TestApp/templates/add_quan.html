@@ -8,7 +8,7 @@
     <h2 class="text-center">Add Stock</h2>
         {%csrf_token%}
         <label for="" class="form-label">Quantity</label >
-        <input type="number" name="quantity" class="form-control">
+        <input type="number" name="quantity" class="form-control" required>
         <label for="" class="form-label">Expiry Date</label>
         <input type="date" name="expiry_date" class="form-control">
         <label for="" class="form-label">Entry Number</label>
